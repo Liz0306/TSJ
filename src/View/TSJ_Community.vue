@@ -26,10 +26,16 @@
       <router-view></router-view>
     </main>
   </div>
+  <PostCreate></PostCreate>
 </template>
 
 <script>
+
+import PostCreate from '@/components/publicacion.vue'
 export default {
+  components: {
+    PostCreate
+  },
   data() {
     return {
       isAuthenticated: !!localStorage.getItem('token'), // Inicializa el estado

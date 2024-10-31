@@ -1,40 +1,27 @@
 <template>
   <div class="container">
     <h1>Haz una Publicación</h1>
-    
-    <!-- Formulario para la publicación -->
-    <textarea v-model="postContent" placeholder="Descripción de la publicación"></textarea>
-
-    <!-- Campos obligatorios -->
+    <textarea v-model="postContent" placeholder="Descripción general de la publicación"></textarea>
     <div>
       <label for="salida">Salida:</label>
       <input type="text" v-model="salida" placeholder="Ej. Campus TSJ" required>
     </div>
-
     <div>
       <label for="destino">Destino:</label>
       <input type="text" v-model="destino" placeholder="Ej. Centro Guadalajara" required>
     </div>
-
     <div>
       <label for="horaSalida">Hora de Salida:</label>
       <input type="time" v-model="horaSalida" required>
     </div>
-
     <div>
-      <label for="cupo">Cupo en Carro:</label>
+      <label for="cupo">Cantidad de Cupo:</label>
       <input type="number" v-model="cupo" placeholder="Ej. 4" required>
     </div>
-
-    <!-- Input para subir la imagen -->
     <input type="file" @change="onImageChange" accept="image/*">
-    
-    <!-- Vista previa de la imagen -->
     <div v-if="imageSrc">
       <img :src="imageSrc" alt="Vista previa de la imagen" class="post-image">
     </div>
-
-    <!-- Selector de colores para el fondo -->
     <h3>Elige un color de fondo:</h3>
     <div id="colorPicker">
       <button
@@ -45,25 +32,15 @@
         @click="selectColor(color)">
       </button>
     </div>
-
-    <button @click="post">Publicar</button>
-
-    <div id="postsContainer">
-      <div v-for="(post, index) in posts" :key="index" class="post" :style="{ backgroundColor: post.color }">
-        <p><strong>Salida:</strong> {{ post.salida }}</p>
-        <p><strong>Destino:</strong> {{ post.destino }}</p>
-        <p><strong>Hora de Salida:</strong> {{ post.horaSalida }}</p>
-        <p><strong>Cantidad de Cupo:</strong> {{ post.cupo }}</p>
-        <p>{{ post.content }}</p>
-        <img v-if="post.imageSrc" :src="post.imageSrc" alt="Imagen de la publicación" class="post-image">
-      </div>
-    </div>
+    <button @click="post">Publicar </button>
   </div>
 </template>
 
 <script>
+import EventBus from '@/eventBus.js'; // Importa el bus de eventos
+
 export default {
-  name: 'PUblicMain', 
+  name: 'PostCreate',
   data() {
     return {
       postContent: '',
@@ -73,7 +50,6 @@ export default {
       cupo: '',
       imageSrc: '',
       selectedColor: '#FFFFFF',
-      posts: [],
       colors: ['#FFD700', '#FF4500', '#1E90FF', '#32CD32', '#FF69B4'],
     };
   },
@@ -100,26 +76,26 @@ export default {
           cupo: this.cupo,
           content: this.postContent,
           imageSrc: this.imageSrc,
-          color: this.selectedColor,
+          color: this.selectedColor
         };
-        this.posts.push(newPost);
-
-        
-        // Limpiar los campos
-        this.postContent = '';
-        this.salida = '';
-        this.destino = '';
-        this.horaSalida = '';
-        this.cupo = '';
-        this.imageSrc = '';
-        this.selectedColor = '#FFFFFF';
+        console.log('Nuevo post mandado:', newPost);
+        EventBus.emit('new-post', newPost); // Emitir el evento a través del bus
+        this.clearFields(); // Limpiar los campos después de publicar
       } else {
-        alert('Por favor, completa todos los campos.');
+        alert("Por favor, completa todos los campos.");
       }
+    },
+    clearFields() {
+      this.postContent = '';
+      this.salida = '';
+      this.destino = '';
+      this.horaSalida = '';
+      this.cupo = '';
+      this.imageSrc = '';
+      this.selectedColor = '#FFFFFF';
     }
   }
 };
-
 </script>
 
 <style scoped>
@@ -219,51 +195,7 @@ button:hover {
   background-color: #006bb3;
 }
 
-/* Estilos de las publicaciones */
-.post {
-  background-color: #f0f0f0;
-  padding: 20px;
-  border-radius: 10px;
-  margin-bottom: 20px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-}
 
-.post p {
-  font-size: 16px;
-  margin-bottom: 10px;
-  line-height: 1.6;
-  color: #333;
-}
-
-.post-content {
-  margin-bottom: 10px;
-  white-space: pre-line;
-}
-
-.post-image {
-  max-width: 100%;
-  height: auto;
-  border-radius: 10px;
-  margin-top: 10px;
-}
-
-#postsContainer {
-  margin-top: 40px;
-}
-
-#imagePreview {
-  margin-bottom: 20px;
-}
-
-#imagePreview img {
-  max-width: 100%;
-  height: auto;
-  border-radius: 10px;
-}
-
-.hidden {
-  display: none;
-}
 
 </style>
 

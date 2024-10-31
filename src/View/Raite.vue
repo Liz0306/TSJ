@@ -1,23 +1,21 @@
 <template>
+<h1>public</h1>
 
+    <PostMost></PostMost>
 
-    <PublicMain></PublicMain>
-    
 </template>
 
 
 
 <script>
-import PublicMain from '../components/publicacion.vue'
+
+import PostMost from '@/components/PublicMostrar.vue'
 export default {
       name: 'HelloWorld',
-      props: {
-        msg: String
-      },
       components:{
-        PublicMain
+        PostMost
       }
-    }
+};
 
 
 </script>
