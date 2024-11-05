@@ -9,9 +9,9 @@
           <p>{{ post.nombre_usuario}}{{post.apellido_usuario }}</p>
         </router-link>
         <p><strong>Punto de salida:</strong> {{ post.punto_salida }}</p>
-        <p><strong>Punto de punto_destino:</strong> {{ post.punto_punto_destino }}</p>
+        <p><strong>Punto de punto_destino:</strong> {{ post.punto_destino }}</p>
         <p><strong>Hora de salida:</strong> {{ post.hora_salida }}</p>
-        <p><strong>Cupo disponible:</strong> {{ post.cupo_disponible_disponible }}</p>
+        <p><strong>Cupo disponible:</strong> {{ post.cupo_disponible }}</p>
         <p><strong>$Tarifa</strong> {{ post.tarifa }}</p>
         <div class="button-container">
           <button @click="editPost(index)" class="edit-button">Editar</button>
@@ -49,14 +49,7 @@ export default {
           cupo_disponible: 2,
         }
       ],
-      a: {
-        color: "#fffff",
-        postContent: 'Contenido de la publicación 2',
-        salida: '456',
-        punto_destino: 'México',
-        hora_salida: '10:00 AM',
-        cupo_disponible: 3,
-      }
+
     };
   },
   
@@ -71,12 +64,13 @@ beforeMount(){
 },
 methods: {
     addNewPost(post) {
-      console.log("Datos recibidos por el componente:", post);
+      // console.log("Datos recibidos por el componente:", post);
       this.newPosts.push(post);
-      console.log('Estado actualizado de newPosts:', this.newPosts);
+      // console.log('Estado actualizado de newPosts:', this.newPosts);
     },
     getTravels(){
       fetch('http://localhost:3000/api/viaje',{
+        method:'GET',
         headers:{  
         'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
@@ -85,11 +79,10 @@ methods: {
           if (!response.ok) {
             throw new Error('Network response was not ok');
           }
-          return response.json(); // Convierte la respuesta en JSON
+          return response.json(); 
         })
         .then(data => {
-          this.newPosts = data; // Actualiza newPosts con los datos obtenidos
-          console.log('Posts obtenidos:', this.newPosts);
+          this.newPosts = data; 
         })
         .catch(error => {
           console.error('Hubo un problema con la solicitud fetch:', error);

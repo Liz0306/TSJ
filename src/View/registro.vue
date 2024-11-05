@@ -72,9 +72,7 @@ export default {
               headers:{
                    'Content-Type': 'application/json',
               },
-              
               body:JSON.stringify(userData)
-
           })
           if(!response.ok){
               throw new Error('Algo salio malo');
