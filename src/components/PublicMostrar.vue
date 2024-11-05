@@ -1,87 +1,69 @@
 <template>
-    <div id="postsContainer">
-      <div v-for="(post, index) in posts" :key="index" class="post" :style="{ backgroundColor: post.color }">
-        <p><strong>Salida:</strong> {{ post.salida }}</p>
-        <p><strong>Destino:</strong> {{ post.destino }}</p>
-        <p><strong>Hora de Salida:</strong> {{ post.horaSalida }}</p>
-        <p><strong>Cantidad de Cupo:</strong> {{ post.cupo }}</p>
-        <p class="post-content">{{ post.content }}</p>
-        <img v-if="post.imageSrc" :src="post.imageSrc" alt="Imagen de la publicación" class="post-image">
+  <div class="post-list">
+    <h2>Publicaciones</h2>
+    <div v-for="(post, index) in posts" :key="index" class="post">
+      <h3>{{ post.content }}</h3>
+      <p>Salida: {{ post.salida }}</p>
+      <p>Destino: {{ post.punto_destino }}</p>
+      <p>Hora de Salida: {{ post.hora_salida }}</p>
+      <p>Cupo: {{ post.cupo_disponible }}</p>
+      <div v-if="post.imageSrc">
+        <img :src="post.imageSrc" alt="Vista previa de la imagen" class="post-image">
       </div>
+      <div :style="{ backgroundColor: post.color }" class="color-box"></div>
     </div>
-  </template>
-  
-  <script>
-  import EventBus from '@/eventBus.js'; 
-  
-  export default {
-    name: 'PostMost',
-    data() {
+  </div>
+</template>
+
+<script>
+import EventBus from '@/eventBus.js';
+
+export default {
+  name: 'PostList',
+  data() {
     return {
       posts: []
     };
   },
   created() {
-    EventBus.on('new-post', this.addPost); // Escucha el evento 'new-post' y llama a addPost
-  },
-  beforeUnmount() {
-    EventBus.off('new-post', this.addPost); // Limpia el listener cuando el componente se destruye
+    EventBus.on('new-post', this.addPost);
   },
   methods: {
-    addPost(newPost) {
-      console.log('Nuevo post recibido:', newPost); // Para depuración
-      this.posts.push(newPost); // Agrega la nueva publicación al array
+    addPost(post) {
+      if (post) {
+        this.posts.push(post);
+      
+      }
+    console.log("algo paso ")
     }
+  },
+  beforeUnmount() {
+    EventBus.off('new-post', this.addPost);
   }
 };
-  </script>
-  
-  <style scoped>
-  /* Estilos de las publicaciones */
-.post {
-  background-color: #f0f0f0;
+</script>
+
+<style scoped>
+/* Estilos de PostList */
+.post-list {
   padding: 20px;
-  border-radius: 10px;
+}
+
+.post {
+  padding: 10px;
   margin-bottom: 20px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-}
-
-.post p {
-  font-size: 16px;
-  margin-bottom: 10px;
-  line-height: 1.6;
-  color: #333;
-}
-
-.post-content {
-  margin-bottom: 10px;
-  white-space: pre-line;
+  border: 1px solid #ddd;
+  border-radius: 5px;
 }
 
 .post-image {
-  max-width: 100%;
+  width: 100px;
   height: auto;
-  border-radius: 10px;
+}
+
+.color-box {
+  width: 100px;
+  height: 20px;
   margin-top: 10px;
 }
-
-#postsContainer {
-  margin-top: 40px;
-  background-color: aqua;
-}
-
-#imagePreview {
-  margin-bottom: 20px;
-}
-
-#imagePreview img {
-  max-width: 100%;
-  height: auto;
-  border-radius: 10px;
-}
-
-.hidden {
-  display: none;
-}
-  </style>
-  
+</style>

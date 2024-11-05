@@ -6,6 +6,7 @@ import RegistroUsuario from './View/registro.vue';
 import StudentLogin from './View/login.vue';
 import BecasViw from './View/BecasApartado.vue';
 import RaiteMain from './View/Raite.vue';
+import PostCreate from '@/View/CreacionViajes.vue'
 const routes = [
   {
     path: '/',
@@ -25,6 +26,16 @@ const routes = [
       path: 'login',
       name: 'StudentLogin',
       component: StudentLogin
+    },
+    {
+      path: 'raite',
+      name: 'StudentRaite',
+      component: RaiteMain
+    },
+    {
+      path: 'post',
+      name: 'StudentPost',
+      component: PostCreate
     }
     ]
   },
@@ -33,12 +44,6 @@ const routes = [
     name: 'Becas',
     component: BecasViw,
   },
-  {
-    path: '/Raite',
-    name: 'Raite',
-    component: RaiteMain,
-  }
-
 ];
 
 const router = createRouter({

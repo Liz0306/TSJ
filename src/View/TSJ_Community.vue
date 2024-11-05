@@ -6,14 +6,14 @@
         <li v-if="!isAuthenticated"><router-link to="/communityTSJZ/login" aria-current="page">Inicia Sesión</router-link></li>
         <li v-if="!isAuthenticated"><router-link to="/communityTSJZ/register" aria-current="page">Registrate</router-link></li>
         <li><a href="">Sobre nosotros</a></li>
-        <li><router-link to="/Raite">Raite</router-link></li>
+        <li><router-link to="/communityTSJZ/Raite">Raite</router-link></li>
         <li><a href="">Compra y venta</a></li>
-        <li>
-          <a href="">Perfil</a>
+        <li  v-if="isAuthenticated">
+          <router-link to="/profile">Mi Perfil</router-link>
           <ul class="submenu">
-            <li><router-link to="/profile">Mi Perfil</router-link></li>
+            <li><router-link to="/communityTSJZ">Mi Perfil</router-link></li>
             <li><a href="">Configuración</a></li>
-            <li @click="logout"><router-link to="/profile">Cerrar sesión</router-link></li>
+            <li @click="logout"><router-link to="/communityTSJZ">Cerrar sesión</router-link></li>
           </ul>
         </li>
       </ul>
@@ -26,19 +26,14 @@
       <router-view></router-view>
     </main>
   </div>
-  <PostCreate></PostCreate>
 </template>
 
 <script>
-
-import PostCreate from '@/components/publicacion.vue'
+import  EventBus from '../eventBus';
 export default {
-  components: {
-    PostCreate
-  },
   data() {
     return {
-      isAuthenticated: !!localStorage.getItem('token'), // Inicializa el estado
+       isAuthenticated: !!localStorage.getItem('token'),
     };
   },
   name: 'TSJ_Community',
@@ -46,8 +41,14 @@ export default {
     logout() {
       localStorage.removeItem('token');
       this.isAuthenticated = false;
-      this.$router.push('/communityTSJZ/login');
-    }
+    },
+    handleUserLoggedIn() {
+    this.isAuthenticated = true; 
+
+  }
+  },
+  mounted(){
+    EventBus.on('userLoggedIn',this.handleUserLoggedIn);
   }
 }
 </script>

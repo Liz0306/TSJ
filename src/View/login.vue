@@ -1,67 +1,76 @@
 <template>
-    <div class="login-page">
-      <div class="login-container">
-        <div class="image-section">
-          <img src="../assets/login.png" alt="Login Image" />
-        </div>
-        <div class="form-section">
-          <h2>Iniciar Sesión</h2>
-          <form @submit.prevent="login">
-            <div class="form-group">
-              <label for="email">Correo Electrónico</label>
-              <input type="email" id="email" v-model="email" required />
-            </div>
-            <div class="form-group">
-              <label for="password">Contraseña</label>
-              <input type="password" id="password" v-model="password" required />
-            </div>
-            <button type="submit" class="btn">Iniciar Sesión</button>
-          </form>
-          <p>¿No tienes una cuenta? <router-link to="/register">Regístrate aquí</router-link></p>
-        </div>
+  <div class="login-page">
+    <div class="login-container">
+      <div class="image-section">
+        <img src="../assets/login.png" alt="Login Image" />
+      </div>
+      <div class="form-section">
+        <h2>Iniciar Sesión</h2>
+        <form @submit.prevent="login">
+          <div class="form-group">
+            <label for="email">Correo Electrónico</label>
+            <input type="email" id="email" v-model="email" required />
+          </div>
+          <div class="form-group">
+            <label for="password">Contraseña</label>
+            <input type="password" id="password" v-model="password" required />
+          </div>
+          <button type="submit" class="btn">Iniciar Sesión</button>
+        </form>
+        <p>¿No tienes una cuenta? <router-link to="/communityTSJZ/register">Regístrate aquí</router-link></p>
       </div>
     </div>
-  </template>
-  
-  <script>
-  export default {
-    name:'StundentLogin',
-    data() {
-      return {
-        isAuthenticated: !!localStorage.getItem('token'),
-        email: '',
-        password: ''
-      };
-    },
-    methods: {
-      async login() {
-        const dataUser ={
-            email:this.email,
-            password:this.password
-        }
-        try{
-            const  response= await fetch('http://localhost:3000/auth',{
-                method:'POST',
-                headers:{
-                     'Content-Type': 'application/json',
-                },
-                body:JSON.stringify(dataUser)
-            })
-            if(!response.ok){
-                throw new Error('Algo salio malo');
-            }
-            const responseData = await response.json();
+  </div>
+</template>
 
-            localStorage.setItem('token', responseData.token);
-            alert('Inicio exitoso');
-            this.$router.push('/communityTSJZ');
-        }catch(error){
-            console.error('Error al iniciar sesión:', error);
+<script>
+import EventBus from '../eventBus';
+
+export default {
+  name: 'StudentLogin',
+  data() {
+    return {
+      email: '',
+      password: ''
+    };
+  },
+  computed: {
+    isAuthenticated() {
+      return !!localStorage.getItem('token');
+    }
+  },
+  methods: {
+    async login() {
+      const dataUser = {
+        email: this.email,
+        password: this.password
+      };
+      try {
+        const response = await fetch('http://localhost:3000/user/auth', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(dataUser)
+        });
+        if (!response.ok) {
+          throw new Error('Algo salió mal');
         }
+        const responseData = await response.json();
+
+        localStorage.setItem('token', responseData.token);
+        
+        alert('Inicio exitoso');
+        EventBus.emit('userLoggedIn');
+  
+        this.$router.push('/communityTSJZ');
+      } catch (error) {
+        console.error('Error al iniciar sesión:', error);
       }
     }
-  };
-  </script>
+  }
+};
+</script>
   
   <style scoped>
   .login-page {
