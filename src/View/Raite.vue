@@ -13,7 +13,20 @@
         <p><strong>Hora de salida:</strong> {{ post.hora_salida }}</p>
         <p><strong>Cupo disponible:</strong> {{ post.cupo_disponible }}</p>
         <p><strong>$Tarifa</strong> {{ post.tarifa }}</p>
+
+        <!--barra de progreso-->
+        <div class="progress-bar">
+          <div class="progress-fill" :style="{ width: `${(post.joinedUsers / post.totalCupo) * 100}%` }"></div>
+        </div>
+
+
+        <!---boton de unirse---->
+          <button v-if="post.cupo_disponible > 0" @click="joinTravel(index)" class="join-button">
+            Unirse al viaje
+          </button>
+        <p v-else class="full-message">Cupo lleno</p>
         <div class="button-container">
+
           <button @click="editPost(index)" class="edit-button">Editar</button>
           <button @click="deletePost(index)" class="delete-button">Eliminar</button>
         </div>
@@ -39,6 +52,8 @@ export default {
           punto_destino: 'Guatemala',
           hora_salida: '',
           cupo_disponible: 2,
+          totalCupo:2,
+          joinedUsers: 0,  //ayuda a actualizad el porsentaje d totalcupo
         },
         {
           color: "#fffff",
@@ -47,6 +62,8 @@ export default {
           punto_destino: 'Guatemala',
           hora_salida: '',
           cupo_disponible: 2,
+          totalCupo:2,
+          joinedUsers: 0,
         }
       ],
 
@@ -63,6 +80,17 @@ beforeMount(){
   
 },
 methods: {
+   //metodos d boton unirse
+    joinTravel(index) {
+      const post = this.newPosts[index];
+  if (post.cupo_disponible > 0) {
+    post.joinedUsers++; // Incrementar usuarios que se han unido
+    post.cupo_disponible--; // Reducir el cupo disponible
+  } else {
+    alert('El viaje ya está lleno.');
+  }
+   },
+
     addNewPost(post) {
       // console.log("Datos recibidos por el componente:", post);
       this.newPosts.push(post);
@@ -96,12 +124,14 @@ methods: {
 <style scoped>
 .posts {
   padding: 20px;
+  background-color: #f3e5f5; /* Morado muy claro */
 }
 
 h2 {
-  color: #333;
+  color: #4a148c; /* Morado oscuro */
   text-align: center;
-  font-size: 1.8em;
+  font-size: 2em;
+  font-weight: bold;
   margin-bottom: 20px;
 }
 
@@ -111,72 +141,118 @@ h2 {
 }
 
 .post-item {
-  background-color: #f9f9f9;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  padding: 15px;
-  margin-bottom: 15px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  background: linear-gradient(to right, #7e57c2, #9575cd);
+  color: #fff;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  transition: transform 0.2s ease;
+}
+
+.post-item:hover {
+  transform: translateY(-5px);
 }
 
 .post-content {
-  font-size: 1.2em;
+  font-size: 1.3em;
   font-weight: bold;
-  margin-bottom: 8px;
+  margin-bottom: 10px;
 }
 
 .button-container {
   display: flex;
   justify-content: flex-end;
   gap: 10px;
-  margin-top: 10px;
+  margin-top: 15px;
 }
 
-.edit-button, .delete-button {
-  padding: 8px 12px;
-  font-size: 0.9em;
-  color: white;
+.edit-button, .delete-button, .join-button {
+  padding: 10px 16px;
+  font-size: 1em;
+  font-weight: bold;
+  color: #fff;
   border: none;
-  border-radius: 5px;
+  border-radius: 8px;
   cursor: pointer;
   transition: background-color 0.3s ease;
 }
 
 .edit-button {
-  background-color: #4CAF50;
+  background-color: #7b1fa2; 
 }
 
 .edit-button:hover {
-  background-color: #45a049;
+  background-color: #4a148c;
 }
 
 .delete-button {
-  background-color: #f44336;
+  background-color: #d32f2f;
 }
 
 .delete-button:hover {
-  background-color: #e53935;
+  background-color: #b71c1c;
 }
 
 .floating-button {
   position: fixed;
   bottom: 20px;
   right: 20px;
-  width: 50px;
-  height: 50px;
+  width: 60px;
+  height: 60px;
   border-radius: 50%;
-  background-color: #007bff;
-  color: white;
+  background-color: #512da8;
+  color: #fff;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 24px;
+  font-size: 28px;
   text-decoration: none;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
   transition: background-color 0.3s;
 }
 
 .floating-button:hover {
-  background-color: #0056b3;
+  background-color: #311b92;
 }
+
+
+.join-button {
+  padding: 8px 12px;
+  font-size: 0.9em;
+  color: white;
+  background-color: #6a1b9a;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.join-button:hover {
+  background-color: #4a148c;
+}
+
+.full-message {
+  color: #d32f2f;
+  font-weight: bold;
+  text-align: center;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 12px;
+  background-color: #d1c4e9; /* Morado claro */
+  border-radius: 6px;
+  overflow: hidden;
+  margin: 10px 0;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(to right, #5e35b1, #8e24aa);
+  transition: width 0.3s ease;
+  border-radius: 6px;
+}
+
+
 </style>

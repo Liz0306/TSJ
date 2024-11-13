@@ -4,11 +4,20 @@
     <textarea v-model="postContent" placeholder="Descripción general de la publicación"></textarea>
     <div>
       <label for="salida">Salida:</label>
-      <input type="text" v-model="punto_salida" placeholder="Ej. Campus TSJ" >
+      <select v-model="punto_salida">
+          <option disabled value="">Seleccione un punto de salida</option>
+          <option value="Camino Arenero">Camino Arenero</option>
+          <option value="Universidad">Universidad</option>
+      </select>
     </div>
+
     <div>
       <label for="punto_destino">Destino:</label>
-      <input type="text" v-model="punto_destino" placeholder="Ej. Centro Guadalajara" >
+      <select v-model="punto_destino">
+        <option disabled value="">Seleccione un punto de destino</option>
+        <option value="Camino Arenero">Camino Arenero</option>
+        <option value="Universidad">Universidad</option>
+      </select>
     </div>
     <div>
       <label for="hora_salida">Hora de Salida:</label>
@@ -22,7 +31,6 @@
       <label for="tarifa">Tarifa que deseas poner</label>
       <input type="number" v-model="tarifa" placeholder="$30" >
     </div>
-    <input type="file" @change="onImageChange" accept="image/*">
    
     <h3>Elige un color de fondo:</h3>
     <div id="colorPicker">
@@ -231,6 +239,14 @@ button:hover {
   margin-top: 20px;
   text-align: center;
 }
+
+select {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
 </style>
 
 
