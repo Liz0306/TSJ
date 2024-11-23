@@ -31,7 +31,15 @@
       <label for="tarifa">Tarifa que deseas poner</label>
       <input type="number" v-model="tarifa" placeholder="$30" >
     </div>
-   
+    <div>
+        <label for="carros">Carro que deseas elegir</label>
+        <select id="carros" name="carros" v-model="selectedCarro">
+          <option v-for="carro in carros" :key="carro.id_carro" :value="carro.id_carro">
+            {{ carro.modelo }}
+          </option>
+        </select>
+      </div>
+    <!-- <input type="file" @change="onImageChange" accept="image/*"> -->
     <h3>Elige un color de fondo:</h3>
     <div id="colorPicker">
       <button
@@ -45,10 +53,6 @@
     <button @click="post">Publicar </button>
    </div>
   <div >
- 
- 
-    
-
 </div>
 </template>
 
@@ -68,31 +72,44 @@ export default {
     colors: ['#FFD700', '#FF4500', '#1E90FF', '#32CD32', '#FF69B4'],
     showConfirmation: false, 
     tarifa:0,
+    carros:[],
+    selectedCarro:null,
   };
 },
+created(){
+  this.fetchCarros();
+},
 methods: {
+  async fetchCarros(){
+    try{
+        const response = await fetch('http://localhost:3000/carros/', {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          },
+        });
+        if (!response.ok) {
+          throw new Error('No se pudieron cargar los carros');
+        }
+        const data = await response.json();
+        this.carros = data;
+    }catch(e){
+      console.error("Sucedió un error al obtener los carros", e);
+    }
+  },
   publicacionPost(newPost){
     EventBus.emit('new-post',newPost);
   },
   async post() {
     if (this.punto_salida && this.punto_destino && this.hora_salida && this.cupo_disponible && this.postContent) {
       const newPost = {
-        id_carro: 1,
+        id_carro: this.selectedCarro,
         punto_salida: this.punto_salida,
-        punto_destino: "this.punto_destino",
-        hora_salida:"2024-10-25 15:00:00",
-        cupo_disponible: 4,
-        // postContent: this.postContent,
-        // color: this.selectedColor,
+        punto_destino: this.punto_destino,
+        hora_salida: this.hora_salida,
+        cupo_disponible: this.cupo_disponible,
         tarifa: this.tarifa,
         comentario:"viaje seguro y comodo"
-        // id_carro: 1,
-        // punto_salida: "uwu",
-        // punto_destino: "Tecmm",
-        // hora_salida: "2024-10-25 15:00:00",
-        // cupo_disponible: 4,
-        // tarifa: 10,
-        // comentario: "Viaje seguro y cómodo."
       };
           try {
         const response = await fetch('http://localhost:3000/api/viaje', {
@@ -107,9 +124,6 @@ methods: {
         if (!response.ok) {
             throw new Error('Algo salió mal');
         }
-
-        console.log(newPost);
-       // this.publicacionPost(newPost);
         this.$nextTick(() => {
             this.$router.push('/communityTSJZ/raite');
         });
@@ -151,9 +165,9 @@ body {
 }
 
 .container {
-  max-width: 800px;
+  max-width: 600px; /* Reduce el ancho para un diseño más compacto */
   margin: 0 auto;
-  padding: 20px;
+  padding: 15px;
   background-color: #fff;
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -162,29 +176,29 @@ body {
 h1 {
   text-align: center;
   color: #333;
-  margin-bottom: 20px;
+  margin-bottom: 15px; /* Reduce margen para menor espacio vertical */
 }
 
 textarea {
   width: 100%;
-  padding: 10px;
+  padding: 8px;
   font-size: 16px;
   border: 1px solid #ccc;
   border-radius: 5px;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
   resize: none;
-  min-height: 100px;
+  min-height: 80px; /* Reduce altura mínima */
 }
 
 input[type="text"],
 input[type="number"],
 input[type="time"] {
   width: 100%;
-  padding: 10px;
+  padding: 8px;
   font-size: 16px;
   border: 1px solid #ccc;
   border-radius: 5px;
-  margin-bottom: 15px;
+  margin-bottom: 10px;
 }
 
 label {
@@ -194,19 +208,15 @@ label {
   display: block;
 }
 
-input[type="file"] {
-  margin-bottom: 20px;
-}
-
 #colorPicker {
   display: flex;
   justify-content: space-around;
-  margin-bottom: 20px;
+  margin-bottom: 15px;
 }
 
 .color-btn {
-  width: 40px;
-  height: 40px;
+  width: 35px; /* Reduce tamaño de los botones de color */
+  height: 35px;
   border: 2px solid transparent;
   border-radius: 50%;
   cursor: pointer;
@@ -220,7 +230,7 @@ input[type="file"] {
 
 button {
   width: 100%;
-  padding: 15px;
+  padding: 12px; /* Reduce padding para menor altura */
   font-size: 16px;
   background-color: #1e90ff;
   color: #fff;
@@ -228,15 +238,15 @@ button {
   border-radius: 5px;
   cursor: pointer;
   transition: background-color 0.3s ease;
+  margin-top: 10px;
 }
 
 button:hover {
   background-color: #006bb3;
 }
 
-
 .confirmation-container {
-  margin-top: 20px;
+  margin-top: 15px;
   text-align: center;
 }
 
@@ -245,9 +255,16 @@ select {
   padding: 8px;
   border: 1px solid #ccc;
   border-radius: 5px;
+  margin-bottom: 10px;
 }
 
+/* Estilo en fila para agrupar ciertos campos */
+.row {
+  display: flex;
+  gap: 10px;
+}
+
+.row > div {
+  flex: 1;
+}
 </style>
-
-
-

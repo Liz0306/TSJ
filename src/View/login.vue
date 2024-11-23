@@ -25,8 +25,9 @@
 
 <script>
 import EventBus from '../eventBus';
-
+import socket from '../plugins/socket.js'
 export default {
+  
   name: 'StudentLogin',
   data() {
     return {
@@ -59,6 +60,9 @@ export default {
         const responseData = await response.json();
 
         localStorage.setItem('token', responseData.token);
+        localStorage.setItem('userId',responseData.userId);
+
+        socket.emit('user-connected', { userId: responseData.userId });
         
         alert('Inicio exitoso');
         EventBus.emit('userLoggedIn');
@@ -164,5 +168,6 @@ export default {
       padding: 20px;
     }
   }
+
   </style>
   

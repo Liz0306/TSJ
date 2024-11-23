@@ -34,7 +34,7 @@ export default {
         this.posts.push(post);
       
       }
-    console.log("algo paso ")
+
     }
   },
   beforeUnmount() {
