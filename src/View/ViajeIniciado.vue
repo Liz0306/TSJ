@@ -261,7 +261,7 @@ h2 {
 
 #carrito {
     position: fixed;
-    bottom: 0;
+    bottom: 20px;
     left: 0;
     width: 100px;
     height: 100px;
@@ -272,12 +272,12 @@ h2 {
 }
 @keyframes moveCarrito {
     0% {
-        left: 0;
-        transform: scaleX(1);
+      left: 0;
+      transform: scaleX(1);
     }
     100% {
-        left: calc(100% - 100px);
-        transform: scaleX(-1);
+      left: calc(100% - 100px);
+      transform: scaleX(-1);
     }
 }
 

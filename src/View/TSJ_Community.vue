@@ -9,9 +9,9 @@
         <li><router-link to="/communityTSJZ/Raite">Raite</router-link></li>
         <li><a href="">Compra y venta</a></li>
         <li  v-if="isAuthenticated">
-          <router-link to="/profile">Mi Perfil</router-link>
+          <router-link to="/communityTSJZ/perfil">Mi Perfil</router-link>
           <ul class="submenu">
-            <li><router-link to="/communityTSJZ">Mi Perfil</router-link></li>
+            <li><router-link to="/communityTSJZ/perfil">Mi Perfil</router-link></li>
             <li><a href="">Configuración</a></li>
             <li @click="logout"><router-link to="/communityTSJZ">Cerrar sesión</router-link></li>
           </ul>
@@ -60,6 +60,7 @@ export default {
 <style scoped>
 /* Layout general */
 .layout {
+
   display: flex;
   min-height: 100vh;
   flex-direction: row;
