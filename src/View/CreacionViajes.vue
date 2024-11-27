@@ -32,19 +32,8 @@
       <input type="number" v-model="tarifa" placeholder="$30" >
     </div>
    
-    <h3>Elige un color de fondo:</h3>
-    <div id="colorPicker">
-      <button
-        v-for="(color, index) in colors"
-        :key="index"
-        :style="{ backgroundColor: color }"
-        class="color-btn"
-        @click="selectColor(color)">
-      </button>
-    </div>
+   
     <button @click="post">Publicar </button>
-   </div>
-  <div >
  
  
     
@@ -64,18 +53,23 @@ export default {
     punto_destino: '',
     hora_salida: '',
     cupo_disponible: '',
-    selectedColor: '#FFFFFF',
+    selectedColor: null,
     colors: ['#FFD700', '#FF4500', '#1E90FF', '#32CD32', '#FF69B4'],
-    showConfirmation: false, 
+    defaultColor: '#7e57c2, #9575cd',
     tarifa:0,
   };
 },
 methods: {
+  selectColor(color){
+    this.selectedColor = color;
+  },
+
   publicacionPost(newPost){
     EventBus.emit('new-post',newPost);
   },
   async post() {
     if (this.punto_salida && this.punto_destino && this.hora_salida && this.cupo_disponible && this.postContent) {
+      const backgroundColor = this.selectedColor || this.defaultColor;
       const newPost = {
         id_carro: 1,
         punto_salida: this.punto_salida,
@@ -83,7 +77,7 @@ methods: {
         hora_salida:"2024-10-25 15:00:00",
         cupo_disponible: 4,
         // postContent: this.postContent,
-        // color: this.selectedColor,
+        color: backgroundColor,
         tarifa: this.tarifa,
         comentario:"viaje seguro y comodo"
         // id_carro: 1,
@@ -246,6 +240,10 @@ select {
   border: 1px solid #ccc;
   border-radius: 5px;
 }
+.color-btn.selected {
+  border: 3px solid #000;
+}
+
 
 </style>
 

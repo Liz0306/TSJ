@@ -14,7 +14,18 @@
           </div>
           <div class="form-group">
             <label for="email">Correo Electrónico</label>
-            <input type="email" id="email" v-model="email" required />
+            <div class="email-input">
+              <input
+                type="text"
+                id="email-start"
+                v-model="emailStart"
+                placeholder=""
+                maxlength="11"
+                required
+              />
+              <span>@zapopan.tecmm.edu.mx</span>
+            </div>
+            <small v-if="emailError" class="error">{{ emailError }}</small>
           </div>
           <div class="form-group">
             <label for="phone">Teléfono</label>
@@ -47,19 +58,37 @@ export default {
     return {
       name: '',
       apellido: '',
-      email: '',
+      emailStart: '', //parte que se puede editar
+      emailError:'', //mensaje de error
       phone: '',
       password: '',
       confirmpassword:''
     };
   },
   methods: {
+    validateEmail() {
+      const email = `${this.emailStart}@zapopan.tecmm.edu.mx`;
+      const emailRegex = /^za\d{9}@zapopan\.tecmm\.edu\.mx$/; //utiliza una exprecion regular para verificar si esta bien 
+
+      if (!emailRegex.test(email)) {
+        this.emailError = 'El correo debe seguir el formato: Contener numeros e iniciar con za';
+        return false;
+      }
+
+      this.emailError = '';
+      return email; // Retorna el correo completo si es válido
+    },
     async register() {
       try{
+          const email = this.validateEmail();
+          if (!email){
+            return; // deten el registro di el correo no es valido
+          }
+
           const userData={
               nombre: this.name,
               apellido: this.apellido,
-              email: this.email,
+              email: email,
               phone: this.phone,
               password: this.password
           }
@@ -171,6 +200,33 @@ p {
   max-width: 90%; /* Ajusta el tamaño máximo aquí */
   height: auto;
 }
+
+.email-input {
+  display: flex;
+  align-items: center;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.email-input input {
+  flex: 1;
+  border: none;
+  padding: 5px;
+}
+
+.email-input span {
+  background-color: #f3f3f3;
+  padding: 5px 10px;
+  white-space: nowrap;
+  border-left: 1px solid #ccc;
+}
+
+.error {
+  color: red;
+  font-size: 0.875rem;
+}
+
 
 /* Estilos responsivos */
 @media (max-width: 768px) {
