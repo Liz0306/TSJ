@@ -42,7 +42,9 @@
 
 <script>
 import EventBus from '@/eventBus.js';
-import socket from '../plugins/socket.js'
+import socket from '@/plugins/socket';
+
+
 export default {
   name: 'PostView',
   data() {
@@ -56,10 +58,17 @@ export default {
   
 mounted() {
   this.getTravels();
-  socket.on('pasajero-agregado', this.handlePassengerAdded);
-  socket.on('pasajero-eliminado', this.handlePassengerRemoved);
+
+  socket.connect();
+
+  socket.emit('register', this.userId);
+
+  socket.on('nuevaSolicitud', (data) => {
+          alert(data.message);
+          console.log('Notificación recibida:', data);
+        });
+        console.warn("se ejecuto")
   EventBus.on('new-post', this.addNewPost);
-  
 },
 beforeMount(){
   EventBus.off('new-post',this.addNewPost);
@@ -81,13 +90,13 @@ methods: {
     }
 
     const result = await response.json();
-    alert(result.message); // Mostrar mensaje de éxito al usuario
+    alert(result.message); 
 
-    // Actualizar el estado local
     const post = this.newPosts[index];
-    post.joinedUsers--; // Disminuir el número de usuarios unidos
-    post.cupo_disponible++; // Incrementar el cupo disponible
-    post.isUserJoined = false; // Marcar que el usuario ya no está unido
+    post.joinedUsers--; 
+    post.cupo_disponible++; 
+    post.isUserJoined = false;
+
   } catch (e) {
     console.error('Error al eliminar pasajero del viaje:', e);
     alert('Hubo un error al intentar eliminar al pasajero del viaje.');
@@ -131,6 +140,7 @@ async deletePost(id_viaje){
        alert('Solicitud enviada. Espera la confirmación del conductor.');
        post.isUserJoined = true;
        post.cupo_disponible--;
+
     }catch(e){
       console.error('Error al solicitar unirse al viaje:', e);
     }

@@ -12,11 +12,25 @@
         <h4>Pasajeros</h4>
         <ul>
           <li v-for="pasajero in viaje.pasajeros" :key="pasajero.id_pasajero">
-            <p>{{ pasajero.nombre }} {{ pasajero.apellido || '' }} - Estatus: {{ pasajero.estatus }}</p>
-            <button class="accept-button"  @click="acceptPassenger(viaje.id_viaje)">Aceptar</button>
-            <button class="reject-button" @click="rejectPassenger(viaje.id_viaje,pasajero.id_pasajero)">Rechazar</button>
-            
-          </li>
+    <p>
+      {{ pasajero.nombre }} {{ pasajero.apellido || '' }} - 
+      Estatus: {{ pasajero.estatus }}
+    </p>
+    <button 
+      class="accept-button"  
+      @click="acceptPassenger(viaje.id_viaje, pasajero.id_pasajero)" 
+      :disabled="pasajero.estatus === 'aceptado'"
+    >
+      Aceptar
+    </button>
+    <button 
+      class="reject-button" 
+      @click="rejectPassenger(viaje.id_viaje, pasajero.id_pasajero)" 
+      :disabled="pasajero.estatus === 'rechazado'"
+    >
+      Rechazar
+    </button>
+  </li>
           <router-link to="/communityTSJZ/viajeIniciado" >Iniciar Viaje</router-link>
          
         </ul>
@@ -54,10 +68,34 @@ export default {
         console.error('Error al obtener pasajeros pendientes:', error);
       }
     },
-    async acceptPassenger(id_pasajero) {
-      // Código para aceptar al pasajero
-      console.log(`Pasajero con ID ${id_pasajero} aceptado`);
-      // Aquí puedes hacer una petición para cambiar el estado a "confirmado"
+    async acceptPassenger(id_viaje,id_pasajero) {
+      try{
+        const response = await fetch('http://localhost:3000/api/viajeConfirmarPasajeros',{
+          method: 'PUT',
+          headers:{
+             'Content-Type': 'application/json',
+             'Authorization': `Bearer ${localStorage.getItem('token')}`
+          },
+          body: JSON.stringify({ id_viaje, id_pasajero })
+        })
+        if (!response.ok) {
+         throw new Error('Error al aceptar al pasajero del viaje');
+          }
+          const result = await response.json();
+          alert(result.message);
+
+
+          const viaje = this.pendingPassengers.find(v => v.id_viaje === id_viaje);
+    if (viaje) {
+      const pasajero = viaje.pasajeros.find(p => p.id_pasajero === id_pasajero);
+      if (pasajero) {
+        pasajero.estatus = 'aceptado'; // Cambiar el estado localmente
+      }
+    }
+      }catch(e){
+        alert('Hubo un error al intentar eliminar al pasajero del viaje.');
+      }
+
     },
     async rejectPassenger(id_viaje, id_pasajero) {
   try {
@@ -69,11 +107,10 @@ export default {
       },
       body: JSON.stringify({ id_viaje, id_pasajero })
     });
-
     if (!response.ok) {
       throw new Error('Error al eliminar al pasajero del viaje');
     }
-
+ 
     const result = await response.json();
     alert(result.message);
 

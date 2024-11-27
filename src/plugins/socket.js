@@ -1,5 +1,15 @@
-import { io } from 'socket.io-client';
+import { io } from "socket.io-client";
 
-const socket = io('http://localhost:3000');
+let socket = null;
+
+if (!socket) {
+    socket = io("http://localhost:3000", {
+        autoConnect: false, // Desactiva conexión automática
+        withCredentials: true,
+        extraHeaders: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+    });
+}
 
 export default socket;

@@ -62,8 +62,8 @@ export default {
         localStorage.setItem('token', responseData.token);
         localStorage.setItem('userId',responseData.userId);
 
-        socket.emit('user-connected', { userId: responseData.userId });
-        
+       socket.emit('register', localStorage.getItem('userId'));
+
         alert('Inicio exitoso');
         EventBus.emit('userLoggedIn');
   
